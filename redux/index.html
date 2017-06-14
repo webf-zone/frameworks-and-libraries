@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Redux learning</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div class="container">
+            <h1>Project Management</h1>
+            <hr />
+
+            <form class="">
+                <div class="form-group">
+                    <label for="p_name">Project Name</label>
+                    <input class="form-control" placeholder="Project Name" type="text" id="p_name" />
+                </div>
+                <div class="form-group">
+                    <label for="p_name">Project Goal</label>
+                    <input class="form-control" placeholder="Project Goal" type="text" id="p_goal" />
+                </div>
+                <div class="form-group">
+                        <label for="p_funded">Is the project funded?</label>
+                    <select class="form-control" id="p_funded">
+                        <option>Yes</option>
+                        <option>No</option>
+                    </select>
+                </div>
+            </form>
+
+            <button class="btn btn-success" id="new">New</button>
+
+            <hr />
+            <h6>Total Projects: <span id="counter"></span></h6>
+            <button class="btn btn-danger" id="delete_all">Delete All</button>
+            <button class="btn btn-primary" id="reset">Reset</button>
+            <hr />
+
+            <ul id="projects" class="list-group"></ul>
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/redux/3.7.2/redux.min.js"></script>
+        <script src="index.js"></script>
+    </body>
+</html>
