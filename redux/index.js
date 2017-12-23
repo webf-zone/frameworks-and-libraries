@@ -1,10 +1,11 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { createLogger } from 'redux-logger';
+import thunk from 'redux-thunk';
 
 // instantiate the store
 const store = createStore(
     combineReducers({ projectReducer: projectReducer }),
-    applyMiddleware(createLogger())
+    applyMiddleware(createLogger(), thunk)
 );
 
 // handlers
@@ -34,37 +35,49 @@ document.querySelector('#projects').addEventListener('click', evt => {
 
 document.querySelector('#delete_all').addEventListener('click', () => {
     store.dispatch({
-        type: 'DELETE_ALL' // expression
+        type: 'FETCH',
+        payload: {
+            idCache: 0,
+            projects: []
+        }
     });
 });
 
 document.querySelector('#reset').addEventListener('click', () => {
-    store.dispatch({
-        type: 'RESET' // expression
-    });
+    readyOrReset('RESET');
 });
 
 // subscriber
 function render () {
-    const projects = store.getState().projectReducer.projects;
+    const state = store.getState();
+    const listEl = document.querySelector('#projects');
+    const counterEl = document.querySelector('#counter');
+    const loadingText = '... Loading';
 
-    document.querySelector('#counter').innerText = projects.length;
+    if (state.projectReducer.loading) {
+        listEl.innerHTML = loadingText;
+        counterEl.innerHTML = loadingText;
+    } else {
+        const projects = state.projectReducer.projects;
 
-    const projectList = projects.map(project => {
-        return [
-            '<li class="list-group-item justify-content-between align-items-center d-flex">',
-            project.name,
-            '<span class="badge badge-primary badge-pill">',
-            project.goal,
-            '</span>',
-            '<button data-project-id="',
-            project.id,
-            '" type="button" class="btn btn-outline-danger">X</button>',
-            '</li>'
-        ].join('');
-    });
+        counterEl.innerText = projects.length;
 
-    document.querySelector('#projects').innerHTML = projectList.join('');
+        const projectList = projects.map(project => {
+            return [
+                '<li class="list-group-item justify-content-between align-items-center d-flex">',
+                project.name,
+                '<span class="badge badge-primary badge-pill">',
+                project.goal,
+                '</span>',
+                '<button data-project-id="',
+                project.id,
+                '" type="button" class="btn btn-outline-danger">X</button>',
+                '</li>'
+            ].join('');
+        });
+
+        listEl.innerHTML = projectList.join('');
+    }
 }
 
 // assign the subscriber
@@ -73,21 +86,8 @@ store.subscribe(render);
 // reducer
 function projectReducer (
     state = {
-        idCache: 2,
-        projects: [
-            {
-                id: 1,
-                name: 'Mission to Mars',
-                goal: 1000,
-                funded: false
-            },
-            {
-                id: 2,
-                name: 'Mission to Venus',
-                goal: 1000,
-                funded: false
-            }
-        ]
+        idCache: 0,
+        projects: []
     },
     action
 ) {
@@ -97,6 +97,7 @@ function projectReducer (
 
             return {
                 ...state,
+                loading: !!action.payload.loading,
                 idCache: newId,
                 projects: [
                     ...state.projects,
@@ -111,6 +112,7 @@ function projectReducer (
         case 'DELETE': // expression
             return {
                 ...state,
+                loading: !!action.payload.loading,
                 projects: [
                     ...state.projects.filter(project => {
                         return project.id !== action.payload.id;
@@ -118,29 +120,14 @@ function projectReducer (
                 ]
             };
         case 'RESET': // expression
-            return {
-                ...state,
-                idCache: 2,
-                projects: [
-                    {
-                        id: 1,
-                        name: 'Mission to Mars',
-                        goal: 1000,
-                        funded: false
-                    },
-                    {
-                        id: 2,
-                        name: 'Mission to Venus',
-                        goal: 1000,
-                        funded: false
-                    }
-                ]
-            };
+        case 'READY': // expression
         case 'DELETE_ALL': // expression
+        case 'FETCH': // expression
             return {
                 ...state,
-                idCache: 0,
-                projects: []
+                loading: !!action.payload.loading,
+                idCache: action.payload.idCache,
+                projects: [...action.payload.projects]
             };
     }
 
@@ -148,4 +135,48 @@ function projectReducer (
 }
 
 // on load
-render();
+readyOrReset('READY');
+
+function readyOrReset (evtType) {
+    store.dispatch(dispatch => {
+        dispatch({
+            type: 'FETCH',
+            payload: {
+                loading: true,
+                idCache: 0,
+                projects: []
+            }
+        });
+
+        fetchProjects().then(projects => {
+            dispatch({
+                type: evtType,
+                payload: {
+                    idCache: projects.length,
+                    projects: [...projects]
+                }
+            });
+        });
+    });
+}
+
+function fetchProjects () {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve([
+                {
+                    id: 1,
+                    name: 'Mission to Mars',
+                    goal: 1000,
+                    funded: false
+                },
+                {
+                    id: 2,
+                    name: 'Mission to Venus',
+                    goal: 1000,
+                    funded: false
+                }
+            ]);
+        }, 2000);
+    });
+}
