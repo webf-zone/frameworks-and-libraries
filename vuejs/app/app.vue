@@ -1,11 +1,12 @@
 <template>
     <div class="header">
-        <h1>{{ title }}</h1>
+        <h1 v-once>{{ title }}</h1>
 
         <div class="form">
-            <input type="text" v-on:input="changeTitle" />
+            <input type="text" v-bind:value="title" v-on:input="changeTitle" />
         </div>
 
+        <span>{{ title }}</span>
         <a target="_blank" v-bind:href="googleUrl">Google</a>
     </div>
 </template>
@@ -14,7 +15,7 @@
     module.exports = {
         data () {
             return {
-                title: 'Hello world!',
+                title: 'Vue world!',
                 googleUrl: 'http://www.google.com'
             };
         },
