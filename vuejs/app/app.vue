@@ -8,11 +8,11 @@
 
         <span>{{ title }}</span>
         <a target="_blank" v-bind:href="googleUrl">Google</a>
-        Raw html from Vue: <span v-html="yahooAnchor"></span>
+        <p>Raw html from Vue: <span v-html="yahooAnchor"></span></p>
 
         <hr />
 
-        {{ num }} <button v-on:click="increment">Increment</button>
+        {{ num }} <button v-on:click="increment(2, $event)">Increment</button>
     </div>
 </template>
 
@@ -30,8 +30,9 @@
             changeTitle (event) {
                 this.title = event.target.value;
             },
-            increment () {
-                this.num++;
+            increment (step, event) {
+                this.title = event.target.nodeName + ' clicked';
+                this.num += step;
             }
         }
     };
