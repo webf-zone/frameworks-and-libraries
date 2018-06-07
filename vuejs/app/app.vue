@@ -1,6 +1,12 @@
 <template>
     <div class="header">
-        <h1>{{ message }}</h1>
+        <h1>{{ title }}</h1>
+
+        <div class="form">
+            <input type="text" v-on:input="changeTitle" />
+        </div>
+
+        <a target="_blank" v-bind:href="googleUrl">Google</a>
     </div>
 </template>
 
@@ -8,8 +14,14 @@
     module.exports = {
         data () {
             return {
-                message: 'Hello world!'
+                title: 'Hello world!',
+                googleUrl: 'http://www.google.com'
             };
+        },
+        methods: {
+            changeTitle (event) {
+                this.title = event.target.value;
+            }
         }
     };
 </script>
@@ -18,5 +30,11 @@
     .header h1 {
         font-size: 2rem;
         color: darkslategray;
+        border-bottom: 1px solid black;
+        margin-bottom: 2rem;
+    }
+
+    .form {
+        padding: 2rem 0;
     }
 </style>
