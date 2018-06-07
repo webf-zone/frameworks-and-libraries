@@ -8,8 +8,11 @@
 
         <span>{{ title }}</span>
         <a target="_blank" v-bind:href="googleUrl">Google</a>
-        <hr />
         Raw html from Vue: <span v-html="yahooAnchor"></span>
+
+        <hr />
+
+        {{ num }} <button v-on:click="increment">Increment</button>
     </div>
 </template>
 
@@ -19,12 +22,16 @@
             return {
                 title: 'Vue world!',
                 googleUrl: 'http://www.google.com',
-                yahooAnchor: '<a target="_blank" href="http://www.yahoo.com">Yahoo</a>'
+                yahooAnchor: '<a target="_blank" href="http://www.yahoo.com">Yahoo</a>',
+                num: 0
             };
         },
         methods: {
             changeTitle (event) {
                 this.title = event.target.value;
+            },
+            increment () {
+                this.num++;
             }
         }
     };
