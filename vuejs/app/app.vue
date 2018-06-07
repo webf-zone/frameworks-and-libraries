@@ -8,6 +8,8 @@
 
         <span>{{ title }}</span>
         <a target="_blank" v-bind:href="googleUrl">Google</a>
+        <hr />
+        Raw html from Vue: <span v-html="yahooAnchor"></span>
     </div>
 </template>
 
@@ -16,7 +18,8 @@
         data () {
             return {
                 title: 'Vue world!',
-                googleUrl: 'http://www.google.com'
+                googleUrl: 'http://www.google.com',
+                yahooAnchor: '<a target="_blank" href="http://www.yahoo.com">Yahoo</a>'
             };
         },
         methods: {
