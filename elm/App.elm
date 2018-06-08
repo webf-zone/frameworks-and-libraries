@@ -1,8 +1,8 @@
 module App exposing (..)
 
 import Html exposing (Html, button, div, text, program)
-import Mouse
-import Keyboard
+import Html.Events exposing (onClick)
+import Random
 
 
 -- MODEL
@@ -14,7 +14,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( 0, Cmd.none )
+    ( 1, Cmd.none )
 
 
 
@@ -22,8 +22,8 @@ init =
 
 
 type Msg
-    = MouseMsg Mouse.Position
-    | KeyMsg Keyboard.KeyCode
+    = Roll
+    | OnResult Int
 
 
 
@@ -32,8 +32,10 @@ type Msg
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ text (toString model) ]
+    div [] [
+            button [ onClick Roll ] [ text "Roll" ]
+            , text (toString model)
+        ]
 
 
 
@@ -43,22 +45,10 @@ view model =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        MouseMsg position ->
-            ( model + 1, Cmd.none )
-        KeyMsg keyCode ->
-            ( model + 2, Cmd.none )
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.batch [
-        Mouse.clicks MouseMsg
-        , Keyboard.downs KeyMsg
-    ]
+        Roll ->
+            ( model, Random.generate OnResult (Random.int 1 6) )
+        OnResult res ->
+            ( res, Cmd.none )
 
 
 
@@ -71,5 +61,5 @@ main =
         { init = init
         , view = view
         , update = update
-        , subscriptions = subscriptions
+        , subscriptions = (always Sub.none)
         }
