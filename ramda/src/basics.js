@@ -3,7 +3,10 @@ const R = require('ramda');
 const isProp1One = R.propEq('prop1', 1);
 const isNameOne = R.propEq('name', 'One');
 
-const slug = R.compose(
+const either = R.either(isProp1One, isNameOne);
+const both = R.both(isProp1One, isNameOne);
+
+const slugThroughComposition = R.compose(
     encodeURIComponent,
     R.join('-'),
     R.map(R.toLower),
@@ -22,9 +25,9 @@ const isFirstEleBiggest = R.converge(
 );
 
 module.exports = {
-    'either': R.either(isProp1One, isNameOne),
-    'both': R.both(isProp1One, isNameOne),
-    'slugThroughComposition': slug,
-    'pathOr': pathOr,
-    'isFirstEleBiggest': isFirstEleBiggest
+    either,
+    both,
+    slugThroughComposition,
+    pathOr,
+    isFirstEleBiggest
 };
