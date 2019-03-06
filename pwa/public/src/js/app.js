@@ -1,3 +1,5 @@
+var deferredPrompt;
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
     .register('/sw.js', {
@@ -7,3 +9,11 @@ if ('serviceWorker' in navigator) {
       console.log('ServiceWorker is registered');
     });
 }
+
+window.addEventListener('onbeforeinstallprompt', function (event) {
+  console.log('install prompt cancelled..');
+  event.preventDefault();
+
+  deferredPrompt = event;
+  return false;
+})
