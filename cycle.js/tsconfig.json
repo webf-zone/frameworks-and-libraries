@@ -4,8 +4,12 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "es6",
-    "target": "es5",
-    "jsx": "react",
-    "allowJs": true
-  }
+    "target": "esnext",
+    "allowJs": false,
+    "isolatedModules": true,
+    "strict": true,
+    "moduleResolution": "node"
+  },
+
+  "include": [ "src" ]
 }

@@ -1,4 +1,4 @@
-import { Stream as xs } from '../node_modules/xstream/dist/xstream';
+import xs from 'xstream';
 
 // Logic
 xs.periodic(1000)
@@ -9,6 +9,9 @@ xs.periodic(1000)
   .subscribe({
     next: (str: string) => {
       const el = document.querySelector('div.ch_01');
-      el.textContent = str;
+
+      if (el) {
+        el.textContent = str;
+      }
     }
   });
