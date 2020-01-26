@@ -5,6 +5,7 @@
   "author": "Kumar Bhot",
   "license": "MIT",
   "dependencies": {
+    "@cycle/run": "^5.4.0",
     "xstream": "^11.11.0"
   },
   "devDependencies": {
