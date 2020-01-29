@@ -3,13 +3,13 @@ import fromEvent from 'xstream/extra/fromEvent';
 import run, { MatchingMain, MatchingDrivers } from '@cycle/run';
 
 type Sources = {
-  [index: string]: Stream<Event>
+  [index: string]: Stream<Event>;
 };
 
 type AStream = MemoryStream<object> & MemoryStream<number>;
 
 type SinkOfStreams = {
-  [index: string]: AStream
+  [index: string]: AStream;
 };
 
 type Effects = {
@@ -44,15 +44,15 @@ function main(sources: Sources) {
   };
 }
 
-function domDriver(obj$: MemoryStream<object>): Stream<Event> {
+function domDriver(obj$: AStream) {
   function createElement(e: Elmt): Element {
     const ele = document.createElement(e.tag);
 
-    e.children.forEach((child: any) => {  // TODO: fix `any`
-      if (child.tag) {
-        ele.appendChild(createElement(child));
-      } else {
+    e.children.forEach((child: string | Elmt) => {
+      if (typeof child === 'string') {
         ele.textContent = child;
+      } else {
+        ele.appendChild(createElement(child));
       }
     });
 
@@ -71,7 +71,7 @@ function domDriver(obj$: MemoryStream<object>): Stream<Event> {
     }
   };
 
-  obj$.subscribe(listner as Partial<Listener<object>>); // TODO: seems hacky
+  obj$.subscribe(listner as Partial<Listener<object>>);
 
   return fromEvent(document, 'click');
 }
@@ -88,8 +88,6 @@ const effects: Effects = {
 };
 
 run(
-  main as MatchingMain<Effects,
-    (sources: Sources) => SinkOfStreams>,
-  effects as MatchingDrivers<Effects, MatchingMain<Effects,
-    (sources: Sources) => SinkOfStreams>>
+  main as MatchingMain<Effects, (sources: Sources) => SinkOfStreams>,
+  effects as MatchingDrivers<Effects, MatchingMain<Effects, (sources: Sources) => SinkOfStreams>>
 );
